@@ -9,6 +9,8 @@ def convert_pad(ctx):
     output = ctx.method_return
 
     pad = ctx.method_args[1]
+    if len(pad) == 2:
+        pad = (pad[0], pad[1], 0, 0)
     pre_padding = (pad[2], pad[0])
     post_padding = (pad[3], pad[1])
 
