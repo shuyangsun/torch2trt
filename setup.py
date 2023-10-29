@@ -1,3 +1,7 @@
+import pip
+
+pip.main(["install", "torch==2.1.0"])
+
 import sys
 from setuptools import setup, find_packages
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension
@@ -38,7 +42,6 @@ setup(
     name="torch2trt",
     version="0.4.0",
     description="An easy to use PyTorch to TensorRT converter",
-    install_requires=["torch==2.1.0"],
     packages=find_packages(exclude=exclude_dir),
     ext_package="torch2trt",
     ext_modules=ext_modules,
