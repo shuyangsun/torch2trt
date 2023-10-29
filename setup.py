@@ -1,7 +1,6 @@
 import sys
-import torch
 from setuptools import setup, find_packages
-from torch.utils.cpp_extension import BuildExtension, CUDAExtension, CppExtension
+from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 from packaging import version
 
 
@@ -17,8 +16,6 @@ ext_modules = []
 exclude_dir = ["torch2trt/contrib", "torch2trt/contrib.*"]
 
 compile_args_cxx = []
-if version.parse(torch.__version__) < version.parse("1.5"):
-    compile_args_cxx.append("-DUSE_DEPRECATED_INTLIST")
 
 plugins_ext_module = CUDAExtension(
     name="plugins",
@@ -41,6 +38,7 @@ setup(
     name="torch2trt",
     version="0.4.0",
     description="An easy to use PyTorch to TensorRT converter",
+    install_requires=["torch==2.1.0"],
     packages=find_packages(exclude=exclude_dir),
     ext_package="torch2trt",
     ext_modules=ext_modules,
