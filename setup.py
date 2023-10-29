@@ -1,5 +1,4 @@
 import sys
-import tensorrt
 import torch
 from setuptools import setup, find_packages
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension, CppExtension
@@ -20,8 +19,6 @@ exclude_dir = ["torch2trt/contrib", "torch2trt/contrib.*"]
 compile_args_cxx = []
 if version.parse(torch.__version__) < version.parse("1.5"):
     compile_args_cxx.append("-DUSE_DEPRECATED_INTLIST")
-if version.parse(tensorrt.__version__) < version.parse("8"):
-    compile_args_cxx.append("-DPRE_TRT8")
 
 plugins_ext_module = CUDAExtension(
     name="plugins",
