@@ -23,7 +23,9 @@ def convert_BatchNorm3d(ctx):
     output._trt = layer.get_output(0)
 
 
-@add_module_test(torch.float32, torch.device('cuda'), [(1, 3, 16, 16, 16)])
-@add_module_test(torch.float32, torch.device('cuda'), [(2, 3, 16, 16, 16)], max_batch_size=2)
+@add_module_test(torch.float32, torch.device("cuda"), [(1, 3, 16, 16, 16)])
+@add_module_test(
+    torch.float32, torch.device("cuda"), [(2, 3, 16, 16, 16)], max_batch_size=2
+)
 def test_BatchNorm3d_basic():
     return torch.nn.BatchNorm3d(3)

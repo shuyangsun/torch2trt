@@ -3,7 +3,9 @@ import torch
 
 
 def _default_condition(x):
-    return isinstance(x, torch.Tensor) and (x.dtype is torch.half or x.dtype is torch.float or x.dtype == torch.bool)
+    return isinstance(x, torch.Tensor) and (
+        x.dtype is torch.half or x.dtype is torch.float or x.dtype == torch.bool
+    )
 
 
 def _make_schema_from_value(value, condition=_default_condition, size=0):
@@ -29,7 +31,6 @@ def _make_schema_from_value(value, condition=_default_condition, size=0):
 
 
 class Flattener(object):
-    
     def __init__(self, schema, size):
         self._schema = schema
         self._size = size
@@ -37,13 +38,13 @@ class Flattener(object):
     @staticmethod
     def from_value(value, condition=_default_condition):
         return Flattener(*_make_schema_from_value(value, condition))
-    
+
     @staticmethod
     def from_dict(x):
-        return Flattener(x['schema'], x['size'])
+        return Flattener(x["schema"], x["size"])
 
     def dict(self):
-        return {'schema': self.schema, 'size': self.size}
+        return {"schema": self.schema, "size": self.size}
 
     @property
     def schema(self):
@@ -87,7 +88,9 @@ class Flattener(object):
             result = {}
             for child_key in sorted(self._schema.keys()):
                 child_schema = self._schema[child_key]
-                result[child_key] = Flattener(child_schema, self.size).unflatten(flattened)
+                result[child_key] = Flattener(child_schema, self.size).unflatten(
+                    flattened
+                )
             return result
         else:
             return None

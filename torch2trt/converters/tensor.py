@@ -2,10 +2,10 @@ from torch2trt.torch2trt import *
 from torch2trt.module_test import add_module_test
 
 
-@tensorrt_converter('torch.tensor')
+@tensorrt_converter("torch.tensor")
 def convert_mod(ctx):
     output = ctx.method_return
-    layer = ctx.network.add_constant(tuple(output.shape), output.detach().cpu().numpy() )
+    layer = ctx.network.add_constant(tuple(output.shape), output.detach().cpu().numpy())
     output._trt = layer.get_output(0)
 
 
@@ -14,9 +14,11 @@ class TorchTensor(torch.nn.Module):
         super(TorchTensor, self).__init__()
 
     def forward(self, x):
-        return x + torch.tensor([[1., 2., 3.], [4., 5., 6.]], device=torch.device('cuda'))
+        return x + torch.tensor(
+            [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]], device=torch.device("cuda")
+        )
 
 
-@add_module_test(torch.float32, torch.device('cuda'), [(1, 2, 3)])
+@add_module_test(torch.float32, torch.device("cuda"), [(1, 2, 3)])
 def test_tensor_creation():
     return TorchTensor()

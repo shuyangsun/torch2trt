@@ -3,7 +3,6 @@ from torch2trt import torch2trt
 
 
 def test_contiguous():
-
     torch.manual_seed(0)
 
     net = torch.nn.Conv2d(3, 10, kernel_size=3)
@@ -20,4 +19,3 @@ def test_contiguous():
 
     delta = torch.max((test_out.contiguous() - test_trt_out.contiguous()).abs())
     assert delta < 1e-3, f"Delta: {delta}"
-

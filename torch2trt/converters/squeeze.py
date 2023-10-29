@@ -1,16 +1,22 @@
 import tensorrt as trt
 import numpy as np
 import torch
-from torch2trt.torch2trt import tensorrt_converter, get_arg, torch_dim_resolve_negative, add_missing_trt_tensors, torch_dim_to_trt_axes
+from torch2trt.torch2trt import (
+    tensorrt_converter,
+    get_arg,
+    torch_dim_resolve_negative,
+    add_missing_trt_tensors,
+    torch_dim_to_trt_axes,
+)
 from torch2trt.module_test import add_module_test
 
 
-@tensorrt_converter('torch.Tensor.squeeze')
-@tensorrt_converter('torch.squeeze')
+@tensorrt_converter("torch.Tensor.squeeze")
+@tensorrt_converter("torch.squeeze")
 def convert_squeeze(ctx):
     input = ctx.method_args[0]
     output = ctx.method_return
-    dim = get_arg(ctx, 'dim', pos=1, default=None)
+    dim = get_arg(ctx, "dim", pos=1, default=None)
 
     if dim < 0:
         dim = len(input.shape) + dim
@@ -24,7 +30,7 @@ def convert_squeeze(ctx):
     # get shape before flatten
     for i in range(input.ndim):
         if input.size(i) == 1 and (dim is None) or (i == dim):
-            continue # skip 1 dimensions
+            continue  # skip 1 dimensions
         else:
             new_shape_trt.append(
                 ctx.network.add_slice(input_shape_trt, [i], [1], [1]).get_output(0)
@@ -46,16 +52,18 @@ class Squeeze(torch.nn.Module):
         return x.squeeze(dim=self.dim)
 
 
-@add_module_test(torch.float32, torch.device('cuda'), [(1, 3, 1)])
-@add_module_test(torch.float32, torch.device('cuda'), [(1, 3, 1, 3)])
-@add_module_test(torch.float32, torch.device('cuda'), [(1, 3, 1, 3)], max_batch_size=2)
+@add_module_test(torch.float32, torch.device("cuda"), [(1, 3, 1)])
+@add_module_test(torch.float32, torch.device("cuda"), [(1, 3, 1, 3)])
+@add_module_test(torch.float32, torch.device("cuda"), [(1, 3, 1, 3)], max_batch_size=2)
 def test_squeeze():
     return Squeeze(2)
 
-@add_module_test(torch.float32, torch.device('cuda'), [(1, 3, 1, 1)])
+
+@add_module_test(torch.float32, torch.device("cuda"), [(1, 3, 1, 1)])
 def test_squeeze_neg():
     return Squeeze(-1)
 
-@add_module_test(torch.float32, torch.device('cuda'), [(1, 3, 1, 1)])
+
+@add_module_test(torch.float32, torch.device("cuda"), [(1, 3, 1, 1)])
 def test_squeeze_neg2():
     return Squeeze(-2)

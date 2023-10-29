@@ -9,15 +9,15 @@ import math
 import os
 
 parser = ArgumentParser()
-parser.add_argument('--images', type=str, default='images')
-parser.add_argument('--detector_data', type=str, default='detector_data')
-parser.add_argument('--recognizer_data', type=str, default='recognizer_data')
-parser.add_argument('--max_image_area', type=int, default=1280*720)
-parser.add_argument('--recognizer_batch_size', type=int, default=1)
+parser.add_argument("--images", type=str, default="images")
+parser.add_argument("--detector_data", type=str, default="detector_data")
+parser.add_argument("--recognizer_data", type=str, default="recognizer_data")
+parser.add_argument("--max_image_area", type=int, default=1280 * 720)
+parser.add_argument("--recognizer_batch_size", type=int, default=1)
 args = parser.parse_args()
 
 
-reader = Reader(['en'])
+reader = Reader(["en"])
 
 
 detector_dataset = FolderDataset(args.detector_data)
@@ -34,7 +34,7 @@ def shrink_to_area(image, area):
         new_width = ar * new_height
         new_height = math.floor(new_height)
         new_width = math.floor(new_width)
-        print(f'Resizing {width}x{height} to {new_width}x{new_height}')
+        print(f"Resizing {width}x{height} to {new_width}x{new_height}")
         image = cv2.resize(image, (new_width, new_height))
 
     return image
@@ -42,8 +42,7 @@ def shrink_to_area(image, area):
 
 with detector_dataset.record(reader.detector.module):
     with recognizer_dataset.record(reader.recognizer.module):
-        
-        for path in glob.glob(os.path.join(args.images, '*.jpg')):
+        for path in glob.glob(os.path.join(args.images, "*.jpg")):
             print(path)
 
             image = cv2.imread(path)

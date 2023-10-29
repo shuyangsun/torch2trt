@@ -5,25 +5,18 @@ from uuid import uuid1
 from torch2trt.flattener import Flattener
 
 
-__all__ = [
-    'DatasetRecorder',
-    'Dataset',
-    'ListDataset',
-    'TensorBatchDataset'
-]
+__all__ = ["DatasetRecorder", "Dataset", "ListDataset", "TensorBatchDataset"]
 
 
 class DatasetRecorder(object):
-
     def __init__(self, dataset, module):
         self.dataset = dataset
         self.module = module
         self.handle = None
 
     def __enter__(self, *args, **kwargs):
-
         if self.handle is not None:
-            raise RuntimeError('DatasetRecorder is already active.')
+            raise RuntimeError("DatasetRecorder is already active.")
 
         self.handle = self.module.register_forward_pre_hook(self._callback)
 
@@ -39,7 +32,6 @@ class DatasetRecorder(object):
 
 
 class Dataset(object):
-
     def __len__(self):
         raise NotImplementedError
 
@@ -57,15 +49,18 @@ class Dataset(object):
 
     @property
     def flattener(self):
-        if not hasattr(self, '_flattener') or self._flattener is None:
-            assert(len(self) > 0, 'Cannot create default flattener without input data.')
+        if not hasattr(self, "_flattener") or self._flattener is None:
+            assert (
+                len(self) > 0,
+                "Cannot create default flattener without input data.",
+            )
             value = self[0]
             self._flattener = Flattener.from_value(value)
         return self._flattener
 
     def getitem_flat(self, index):
         return self.flattener.flatten(self[index])
-    
+
     def shapes_for_index(self, index, flat=False):
         shapes = [None for i in range(self.num_inputs())]
         tensors = self.getitem_flat(index)
@@ -97,7 +92,7 @@ class Dataset(object):
                 shape_tensor.append(tuple(si))
             shape_tensor = torch.LongTensor(shape_tensor)
             shapes.append(shape_tensor)
-        
+
         stat_shapes = []
         for shape in shapes:
             stat_shape = torch.Size(stat_fn(shape))
@@ -137,7 +132,6 @@ class Dataset(object):
 
 
 class ListDataset(Dataset):
-
     def __init__(self, items=None):
         if items is None:
             items = []
@@ -154,7 +148,6 @@ class ListDataset(Dataset):
 
 
 class TensorBatchDataset(Dataset):
-
     def __init__(self, tensors=None):
         if tensors is not None:
             self._flattener = Flattener.from_value(tensors)
@@ -171,8 +164,8 @@ class TensorBatchDataset(Dataset):
 
     def __getitem__(self, idx):
         if self.tensors is None:
-            raise IndexError('Dataset is empty.')
-        return self.flattener.unflatten([t[idx:idx+1] for t in self.tensors])
+            raise IndexError("Dataset is empty.")
+        return self.flattener.unflatten([t[idx : idx + 1] for t in self.tensors])
 
     def insert(self, tensors):
         if self._flattener is None:
@@ -184,24 +177,27 @@ class TensorBatchDataset(Dataset):
             self.tensors = tensors
         else:
             if len(self.tensors) != len(tensors):
-                raise ValueError('Number of inserted tensors does not match the number of tensors in the current dataset.')
-            
-            self.tensors = tuple([
-                torch.cat((self.tensors[index], tensors[index]), dim=0) 
-                for index in range(len(tensors))
-            ])
+                raise ValueError(
+                    "Number of inserted tensors does not match the number of tensors in the current dataset."
+                )
+
+            self.tensors = tuple(
+                [
+                    torch.cat((self.tensors[index], tensors[index]), dim=0)
+                    for index in range(len(tensors))
+                ]
+            )
 
 
 class FolderDataset(Dataset):
-
     def __init__(self, folder):
         super().__init__()
         if not os.path.exists(folder):
             os.makedirs(folder)
         self.folder = folder
-    
+
     def file_paths(self):
-        return sorted(glob.glob(os.path.join(self.folder, '*.pth')))
+        return sorted(glob.glob(os.path.join(self.folder, "*.pth")))
 
     def __len__(self):
         return len(self.file_paths())
@@ -212,6 +208,6 @@ class FolderDataset(Dataset):
     def insert(self, tensors):
         i = 0
         file_paths = [os.path.basename(path) for path in self.file_paths()]
-        while ('input_%d.pth' % i) in file_paths:
+        while ("input_%d.pth" % i) in file_paths:
             i += 1
-        torch.save(tensors, os.path.join(self.folder, 'input_%d.pth' % i))
+        torch.save(tensors, os.path.join(self.folder, "input_%d.pth" % i))

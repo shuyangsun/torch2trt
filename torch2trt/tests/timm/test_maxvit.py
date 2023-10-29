@@ -4,7 +4,7 @@ from timm.models.maxxvit import (
     maxvit_tiny_224,
     maxvit_tiny_224,
     maxvit_rmlp_pico_rw_256,
-    maxvit_rmlp_small_rw_224
+    maxvit_rmlp_small_rw_224,
 )
 import torch
 

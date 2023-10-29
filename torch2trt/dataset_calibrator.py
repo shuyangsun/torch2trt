@@ -3,21 +3,23 @@ import tensorrt as trt
 import os
 from .flattener import Flattener
 
-__all__ = [
-    'DEFAULT_CALIBRATION_ALGORITHM',
-    'DatasetCalibrator'
-]
+__all__ = ["DEFAULT_CALIBRATION_ALGORITHM", "DatasetCalibrator"]
 
 
-if trt.__version__ >= '5.1':
+if trt.__version__ >= "5.1":
     DEFAULT_CALIBRATION_ALGORITHM = trt.CalibrationAlgoType.ENTROPY_CALIBRATION_2
 else:
     DEFAULT_CALIBRATION_ALGORITHM = trt.CalibrationAlgoType.ENTROPY_CALIBRATION
 
 
 class DatasetCalibrator(trt.IInt8Calibrator):
-
-    def __init__(self, dataset, algorithm=DEFAULT_CALIBRATION_ALGORITHM, cache_file=None, flattener=None):
+    def __init__(
+        self,
+        dataset,
+        algorithm=DEFAULT_CALIBRATION_ALGORITHM,
+        cache_file=None,
+        flattener=None,
+    ):
         super(DatasetCalibrator, self).__init__()
         self.dataset = dataset
         self.algorithm = algorithm
@@ -44,10 +46,10 @@ class DatasetCalibrator(trt.IInt8Calibrator):
 
     def read_calibration_cache(self, *args, **kwargs):
         if (self.cache_file is not None) and os.path.exists(self.cache_file):
-            with open(self.cache_file, 'rb') as f:
+            with open(self.cache_file, "rb") as f:
                 return f.read()
-                
+
     def write_calibration_cache(self, cache, *args, **kwargs):
         if self.cache_file is not None:
-            with open(self.cache_file, 'wb') as f:
+            with open(self.cache_file, "wb") as f:
                 f.write(cache)

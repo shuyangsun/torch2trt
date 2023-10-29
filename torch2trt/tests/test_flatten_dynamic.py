@@ -14,7 +14,6 @@ class FlattenModule(torch.nn.Module):
 
 
 def test_flatten_dynamic_0_n1():
-
     # 0, -1
     module = FlattenModule(start_dim=0, end_dim=-1).cuda().eval()
 
@@ -23,10 +22,10 @@ def test_flatten_dynamic_0_n1():
     module_trt = torch2trt(module, [x], max_batch_size=4, log_level=trt.Logger.VERBOSE)
 
     x = torch.randn(1, 4, 5).cuda()
-    assert(torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2))
+    assert torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2)
 
     x = torch.randn(4, 4, 5).cuda()
-    assert(torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2))
+    assert torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2)
 
 
 def test_flatten_dynamic_1_n1():
@@ -38,10 +37,10 @@ def test_flatten_dynamic_1_n1():
     module_trt = torch2trt(module, [x], max_batch_size=4, log_level=trt.Logger.VERBOSE)
 
     x = torch.randn(1, 4, 5).cuda()
-    assert(torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2))
+    assert torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2)
 
     x = torch.randn(4, 4, 5).cuda()
-    assert(torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2))
+    assert torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2)
 
 
 def test_flatten_dynamic_0_1():
@@ -53,12 +52,11 @@ def test_flatten_dynamic_0_1():
     module_trt = torch2trt(module, [x], max_batch_size=4, log_level=trt.Logger.VERBOSE)
 
     x = torch.randn(1, 4, 5).cuda()
-    assert(torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2))
+    assert torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2)
 
     x = torch.randn(4, 4, 5).cuda()
-    assert(torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2))
-    
+    assert torch.allclose(module(x), module_trt(x), atol=1e-2, rtol=1e-2)
 
-if __name__ == '__main__':
 
+if __name__ == "__main__":
     test_flatten_dynamic_0_1()

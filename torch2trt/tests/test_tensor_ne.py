@@ -1,9 +1,9 @@
 import pytest
 import torch
 from torch2trt import torch2trt, trt
-    
-def test_tensor_ne():
 
+
+def test_tensor_ne():
     class NotEqual(torch.nn.Module):
         def __init__(self):
             super(NotEqual, self).__init__()

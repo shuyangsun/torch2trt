@@ -4,7 +4,6 @@ from .flattener import Flattener
 
 
 class Unflatten(nn.Module):
-
     def __init__(self, module, input_flattener=None, output_flattener=None):
         super().__init__()
         self.module = module
@@ -21,7 +20,6 @@ class Unflatten(nn.Module):
 
 
 class Flatten(nn.Module):
-
     def __init__(self, module, input_flattener=None, output_flattener=None):
         super().__init__()
         self.module = module

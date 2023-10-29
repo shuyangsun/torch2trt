@@ -2,8 +2,8 @@ from torch2trt.torch2trt import *
 from torch2trt.module_test import add_module_test
 
 
-@tensorrt_converter("torch.Tensor.transpose", enabled=trt_version() < '7.0')
-@tensorrt_converter("torch.transpose", enabled=trt_version() < '7.0')
+@tensorrt_converter("torch.Tensor.transpose", enabled=trt_version() < "7.0")
+@tensorrt_converter("torch.transpose", enabled=trt_version() < "7.0")
 def convert_transpose(ctx):
     input = ctx.method_args[0]
     input_trt = add_missing_trt_tensors(ctx.network, [input])[0]
@@ -19,8 +19,8 @@ def convert_transpose(ctx):
     output._trt = layer.get_output(0)
 
 
-@tensorrt_converter("torch.Tensor.transpose", enabled=trt_version() >= '7.0')
-@tensorrt_converter('torch.transpose', enabled=trt_version() >= '7.0')
+@tensorrt_converter("torch.Tensor.transpose", enabled=trt_version() >= "7.0")
+@tensorrt_converter("torch.transpose", enabled=trt_version() >= "7.0")
 def convert_transpose_trt7(ctx):
     input = ctx.method_args[0]
     input_trt = add_missing_trt_tensors(ctx.network, [input])[0]
@@ -34,7 +34,6 @@ def convert_transpose_trt7(ctx):
     layer = ctx.network.add_shuffle(input_trt)
     layer.second_transpose = tuple(permutation)
     output._trt = layer.get_output(0)
-
 
 
 class Transpose(torch.nn.Module):

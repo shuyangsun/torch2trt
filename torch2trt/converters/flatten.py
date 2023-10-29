@@ -1,15 +1,21 @@
 import tensorrt as trt
 import numpy as np
-from torch2trt.torch2trt import tensorrt_converter, get_arg, torch_dim_resolve_negative, add_missing_trt_tensors, torch_dim_to_trt_axes
+from torch2trt.torch2trt import (
+    tensorrt_converter,
+    get_arg,
+    torch_dim_resolve_negative,
+    add_missing_trt_tensors,
+    torch_dim_to_trt_axes,
+)
 from torch2trt.module_test import add_module_test
 
 
-@tensorrt_converter('torch.flatten')
-@tensorrt_converter('torch.Tensor.flatten')
+@tensorrt_converter("torch.flatten")
+@tensorrt_converter("torch.Tensor.flatten")
 def convert_flatten(ctx):
     input = ctx.method_args[0]
-    start_dim = get_arg(ctx, 'start_dim', pos=1, default=0)
-    end_dim = get_arg(ctx, 'end_dim', pos=2, default=-1)
+    start_dim = get_arg(ctx, "start_dim", pos=1, default=0)
+    end_dim = get_arg(ctx, "end_dim", pos=2, default=-1)
 
     input_trt = add_missing_trt_tensors(ctx.network, [input])[0]
     output = ctx.method_return
